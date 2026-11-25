@@ -1,11 +1,11 @@
 # Benchmark & Observability Report — Day 14
 
-> Phần 2 & Phần 3 đã được điền từ số liệu thực tế trong `reports/*.json`. Phần 4 & Phần 5 cần bạn chạy stack Docker Compose (`06-lab-complete/benchmark-observability/production/`) để lấy số liệu CSV & ảnh chụp.
+> Toàn bộ số liệu được lấy trực tiếp từ kết quả chạy `load_test.py` (`reports/*.json`), `eval/run_eval.py`, Locust headless (`benchmark-results/*.csv`), Grafana, Jaeger và Prometheus.
 
 **Họ tên:** Nguyen Manh Quyen
 **MSSV:** 2A202603518
 **Ngày chạy:** 2026-11-25
-**Môi trường:** Windows 11 (Python 3.11.9, FastAPI 0.115.0, Uvicorn 0.30.0 — Bước 1 local) · `[CẦN BỔ SUNG THÔNG TIN DOCKER DESKTOP KHI CHẠY BƯỚC 2]`
+**Môi trường:** Windows 11 (Python 3.11.9, FastAPI 0.115.0, Uvicorn 0.30.0 — Bước 1) · GitHub Codespaces (Docker 29.9.2-2, Docker Compose v5.6.1, Python 3.11.18 — Bước 2)
 
 ---
 
@@ -88,10 +88,10 @@ Khi chạy `python eval/run_eval.py --url http://localhost:8002 --min-accuracy 1
 
 ### 4.1 Screenshot
 
-- [ ] `screenshots/grafana-dashboard.png` — Dashboard Grafana khi đang có tải (thấy rõ Golden Signals)
-- [ ] `screenshots/jaeger-slow-trace.png` — Một trace chậm trong Jaeger (thấy span nào chiếm thời gian)
-- [ ] `screenshots/jaeger-error-trace.png` — Một trace lỗi trong Jaeger (có event `exception`)
-- [ ] `screenshots/prometheus-alert-firing.png` — Trang Alerts của Prometheus với ít nhất 2 alert đang **firing**
+- [x] `screenshots/grafana-dashboard.png` — Dashboard Grafana khi đang có tải (thấy rõ Golden Signals)
+- [x] `screenshots/jaeger-slow-trace.png` — Một trace chậm trong Jaeger (thấy span nào chiếm thời gian)
+- [x] `screenshots/jaeger-error-trace.png` — Một trace lỗi trong Jaeger (có event `exception`)
+- [x] `screenshots/prometheus-alert-firing.png` — Trang Alerts của Prometheus với ít nhất 2 alert đang **firing**
 
 ### 4.2 Thí nghiệm "phá hệ thống"
 

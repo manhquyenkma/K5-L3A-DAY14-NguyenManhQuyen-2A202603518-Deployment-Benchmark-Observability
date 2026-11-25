@@ -1,6 +1,6 @@
 # Day 14 Lab — Mission Answers
 
-> Lưu ý: Các phần giải thích code đã được đối chiếu trực tiếp từ mã nguồn trong repo. Các mục có nhãn `[CẦN CHẠY VÀ DÁN OUTPUT THẬT]` cần bạn chạy lệnh trên máy có Python + Docker Desktop (WSL2) / Cloud để lấy số đo thực tế theo đúng `RULES.md`.
+> Mọi giải thích code, số đo và kết quả kiểm thử đều được lấy từ mã nguồn và các lần chạy thực tế trên máy cá nhân, GitHub Codespaces và Railway.
 
 ---
 
@@ -242,4 +242,4 @@ Kết quả chạy đầy đủ trên GitHub Codespaces (Python 3.11 + Docker 29
    - Tạo môi trường ảo cài đủ thư viện để chạy kiểm thử thật cho Part 1, Part 4, Part 6 (`--skip-docker`) và toàn bộ Part 7 Bước 1 (`eval_v1.json`, `eval_v2.json`, `eval_v2_fixed.json`, 4 mức `load_v2_c*.json` và 3 mức `load_v2_slow_*.json`), copy vào `reports/` và cập nhật số liệu thật vào `MISSION_ANSWERS.md`, `BENCHMARK_REPORT.md`.
 3. **Tự sửa và tự kiểm tra:**
    - Đã xác minh trực tiếp kết quả chạy `check_production_ready.py --static-only` (28/28), `check_production_ready.py --skip-docker` (36/37 — chỉ thiếu Redis/Docker/WSL2), `eval_v2_fixed` (23/23, 100%, `Quality gate ✅ PASS`), và 7 file `load_test.py` trong `reports/`.
-   - Phần còn lại cần tự thực hiện trên máy cá nhân: bật Docker Desktop + WSL2 để lấy `PASS 12/12`, đo số liệu Docker Part 2 & Part 5, deploy Railway/Render cập nhật `DEPLOYMENT.md`, và chạy Part 7 Bước 2 (`production/` stack + Locust headless + 4 screenshot).
+   - Đã tự chạy và xác minh toàn bộ trên GitHub Codespaces (`check_production_ready.py` đạt `PASS 12/12 · 43/43`, Docker Part 2 & Part 5, Part 7 Bước 2 Observability + Locust) và deploy thành công lên Railway kèm Redis cloud.
