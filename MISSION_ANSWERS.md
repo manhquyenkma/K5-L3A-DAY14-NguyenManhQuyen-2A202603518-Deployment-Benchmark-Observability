@@ -102,7 +102,8 @@ content-type: application/json
 ## Part 3: Cloud Deployment
 
 ### Exercise 3.1 / 3.2: Deploy Agent Part 6 (`06-lab-complete/`)
-- **Public URL:** `[CẦN ĐIỀN SAU KHI DEPLOY TRÊN RAILWAY HOẶC RENDER]`
+- **Public URL:** https://k5-l3a-day14-nguyenmanhquyen-2a202603518-deploym-production.up.railway.app
+- **Kiểm tra 4 lệnh CP6:** `/health` → `200`, `/ready` → `200`, `POST /ask` không key → `401`, `POST /ask` có key → `200`.
 - **Screenshots:** xem `DEPLOYMENT.md` và thư mục `screenshots/` (`dashboard.png`, `running.png`, `test.png`).
 
 ### So sánh `railway.toml` và `render.yaml`

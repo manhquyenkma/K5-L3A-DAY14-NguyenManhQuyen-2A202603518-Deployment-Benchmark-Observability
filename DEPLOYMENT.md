@@ -1,43 +1,47 @@
 # Deployment Information
 
 ## Public URL
-[CẦN ĐIỀN URL PUBLIC SAU KHI DEPLOY LÊN RAILWAY HOẶC RENDER, vd: https://your-agent.up.railway.app]
+https://k5-l3a-day14-nguyenmanhquyen-2a202603518-deploym-production.up.railway.app
 
 ## Platform
-[Railway / Render]
+Railway (Docker + Railway Redis)
 
 ## Test Commands
 
 ### 1. Health Check (200)
 ```bash
-curl -sS -o /dev/null -w '%{http_code}\n' "https://YOUR_DOMAIN/health"
+curl -sS -o /dev/null -w '%{http_code}\n' "https://k5-l3a-day14-nguyenmanhquyen-2a202603518-deploym-production.up.railway.app/health"
+# Expected: 200
 ```
 
 ### 2. Readiness Check (200 — đã kết nối Redis trên cloud)
 ```bash
-curl -sS -o /dev/null -w '%{http_code}\n' "https://YOUR_DOMAIN/ready"
+curl -sS -o /dev/null -w '%{http_code}\n' "https://k5-l3a-day14-nguyenmanhquyen-2a202603518-deploym-production.up.railway.app/ready"
+# Expected: 200
 ```
 
 ### 3. API Test — Không có key (401)
 ```bash
-curl -sS -o /dev/null -w '%{http_code}\n' -X POST "https://YOUR_DOMAIN/ask" \
+curl -sS -o /dev/null -w '%{http_code}\n' -X POST "https://k5-l3a-day14-nguyenmanhquyen-2a202603518-deploym-production.up.railway.app/ask" \
   -H "Content-Type: application/json" \
   -d '{"question": "Hello"}'
+# Expected: 401
 ```
 
 ### 4. API Test — Có API Key (200)
 ```bash
-curl -sS -o /dev/null -w '%{http_code}\n' -X POST "https://YOUR_DOMAIN/ask" \
+curl -sS -o /dev/null -w '%{http_code}\n' -X POST "https://k5-l3a-day14-nguyenmanhquyen-2a202603518-deploym-production.up.railway.app/ask" \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_KEY" \
   -d '{"user_id": "test", "question": "Hello"}'
+# Expected: 200
 ```
 
 ## Environment Variables Set
-- `PORT` (do nền tảng cấp tự động)
+- `PORT=8000`
 - `ENVIRONMENT=production`
-- `REDIS_URL` (trỏ tới Redis service trên nền tảng)
-- `AGENT_API_KEY` (đặt trên dashboard/CLI, không commit vào Git)
+- `REDIS_URL=${{Redis.REDIS_URL}}`
+- `AGENT_API_KEY` (đặt trên Railway Variables, không commit vào Git)
 - `RATE_LIMIT_PER_MINUTE=10`
 - `DAILY_BUDGET_USD=1.0`
 - `MONTHLY_BUDGET_USD=10.0`
