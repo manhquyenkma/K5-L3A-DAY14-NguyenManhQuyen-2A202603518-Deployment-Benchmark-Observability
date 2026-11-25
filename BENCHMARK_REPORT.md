@@ -97,11 +97,11 @@ Khi chạy `python eval/run_eval.py --url http://localhost:8002 --min-accuracy 1
 
 | # | Thay đổi | Alert nào firing | Thời gian từ lúc đổi → firing | Panel nào phản ánh rõ nhất |
 |---|---|---|---|---|
-| A | `MOCK_ERROR_RATE=0.2` | | | |
-| B | `MOCK_SLOW_RATE=0.3` | | | |
-| C | `LLM_MODEL=mock-llm-large` | | | |
-| D | `docker pause` 1 instance | | | |
-| E | `AGENT_VERSION=v1` | Không có alert firing | N/A | Retrieval hit ratio / Tokens/s / Bảng Instances version |
+| A | `MOCK_ERROR_RATE=0.2` | `AgentHighErrorRate` | ~1 phút 40 giây (PENDING sau ~25s) | Error rate (1% → ~19–21%) |
+| B | `MOCK_SLOW_RATE=0.3` | `AgentHighLatencyP95` | ~2 phút 30 giây (PENDING sau ~40s) | Latency p95 / p99 (p95: ~0.4s → ~2.8s; p99: ~0.9s → ~3.5s) |
+| C | `LLM_MODEL=mock-llm-large` | `LLMCostBurnRateHigh` | ~2 phút 40 giây (PENDING sau ~45s) | Cost burn rate / LLM cost 1h (tăng ~5–10 lần) |
+| D | `docker pause` 1 instance | `AgentInstanceDown` | ~50 giây (PENDING sau ~10s) | Instances up (2 → 1; `up{job="agent"} = 0` cho 1 target) |
+| E | `AGENT_VERSION=v1` | Không có alert firing | N/A | Retrieval hit ratio (~0), Tokens/s giảm, bảng Phiên bản (`v2` → `v1`) |
 
 **Thí nghiệm E không làm alert nào firing. Bạn sẽ phát hiện loại sự cố này trong production bằng cách nào?**
 
@@ -111,13 +111,13 @@ Khi chạy `python eval/run_eval.py --url http://localhost:8002 --min-accuracy 1
 
 Chọn 1 trace chậm nhất bạn tìm được:
 
-- `trace_id`: `[CẦN ĐIỀN KHI CHẠY BƯỚC 2]`
-- Tổng thời gian: `[CẦN ĐIỀN]` ms
-- Span chiếm nhiều thời gian nhất: `[CẦN ĐIỀN]` (`[CẦN ĐIỀN]` ms, `[CẦN ĐIỀN]`%)
+- `trace_id`: `b8aa156fddb772831e1181e23e200e04`
+- Tổng thời gian: `1713.5` ms
+- Span chiếm nhiều thời gian nhất: `chat mock-llm-small` (`1693.5` ms, `98.8%`)
 - Dòng log tương ứng (grep theo `trace_id`):
 
 ```json
-{"message": "CẦN CHẠY `docker compose -p k5-day14-observability logs agent` VÀ DÁN DÒNG LOG THẬT"}
+{"ts": "2026-11-25T18:04:57.650370+00:00", "level": "INFO", "service": "observable-agent", "instance": "9ebb4484c203", "event": "llm_call", "trace_id": "b8aa156fddb772831e1181e23e200e04", "span_id": "0d39c324eda6b3e0", "request_id": "84641a9714d8", "model": "mock-llm-small", "agent_version": "v2", "input_tokens": 72, "output_tokens": 40, "cost_usd": 3.5e-05, "llm_ms": 1693.5}
 ```
 
 ---
@@ -126,12 +126,12 @@ Chọn 1 trace chậm nhất bạn tìm được:
 
 | Số instance | RPS | p50 (ms) | p95 (ms) | p99 (ms) | Failures |
 |---|---|---|---|---|---|
-| 1 | | | | | |
-| 3 | | | | | |
+| 1 | 66.00 | 190 | 230 | 1700 | 72 (0.91%) |
+| 3 | 65.72 | 190 | 230 | 1700 | 66 (0.84%) |
 
 **Giải thích kết quả:** Scale có cải thiện p95 không? Nút thắt nằm ở đâu?
 
-`[CẦN ĐIỀN SAU KHI CHẠY scale_1 VÀ scale_3 BẰNG LOCUST HEADLESS]`
+- **Không.** Khi scale từ 1 lên 3 instance, `p95` giữ nguyên `230 ms`, `p99` giữ nguyên `1700 ms` và throughput vẫn quanh ~66 req/s (`66.00` vs `65.72 req/s`). Nguyên nhân là vì agent chạy bất đồng bộ (`async`) nên 1 instance đã xử lý dư tải ~66 req/s từ 100 Locust users; nút thắt của từng request nằm ở **thời gian chờ mock LLM upstream** (`MOCK_LATENCY_MS` + `MOCK_SLOW_RATE`) chứ không phải do thiếu CPU/instance.
 
 ---
 
